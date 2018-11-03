@@ -24,6 +24,10 @@ struct technicalReports: Decodable {
     let techreports: [techReport]
 }
 
+
+var currentYear: String = ""
+var currentReport = -1
+
 var years: [String] = []
 var reportsByYear: Dictionary<String, [techReport]> = [:]
 //var reports: [techReport] = []
@@ -100,6 +104,11 @@ class ReportsViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "\(years[section])"
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        currentYear = years[indexPath.section]
+        currentReport = indexPath.row
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
