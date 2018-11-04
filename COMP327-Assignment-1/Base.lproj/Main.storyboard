@@ -131,6 +131,7 @@
                         <outlet property="favouriteSwitch" destination="lzX-rN-PSx" id="sGL-E8-UM3"/>
                         <outlet property="lastModifiedLabel" destination="EaL-6k-0jL" id="JhR-Qr-y7o"/>
                         <outlet property="ownerLabel" destination="REC-dg-pTJ" id="liM-Xa-fmR"/>
+                        <outlet property="pdfButton" destination="1HQ-Ag-Xo0" id="d1k-6A-VdN"/>
                         <outlet property="titleLabel" destination="CAd-Yv-FXi" id="MHZ-hG-3Ir"/>
                     </connections>
                 </viewController>

@@ -12,33 +12,94 @@ import CoreData
 
 class ViewController: UIViewController, UIScrollViewDelegate {
 
+    // Outlets for Labels
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var abstractLabel: UILabel!
+    @IBOutlet weak var pdfButton: UIButton!
     @IBOutlet weak var ownerLabel: UILabel!
     @IBOutlet weak var lastModifiedLabel: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
     @IBOutlet weak var favouriteSwitch: UISwitch!
+
+
+    
+    // Called when view loads
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let report = (reportsByYear[currentYear]?[currentReport])!
+        
+        // Title and Author are never Nil - simply assign
+        titleLabel.text = report.title
+        authorLabel.text = report.authors
+        
+        // Abstract can be nil - if nil, set to empty.
+        let abstract = report.abstract ?? "Empty"
+        
+        var finalAbstract = ""
+        if (abstract == "Empty") {
+            finalAbstract = "No abstract available."
+        } else {
+            // If we have an abstract, lets sanitise it to remove Markup
+            finalAbstract = santiseText(text: abstract)
+        }
+        abstractLabel.text = finalAbstract
+        
+        if report.pdf == nil {
+            pdfButton.isHidden = true
+        }
+        
+        // Owner, Last Modified and Comment can all be Nil
+        // Make sure we handle that case
+        let owner = report.owner ??  "None"
+        let lastModified = report.lastModified 
+        let comment = report.comment ?? "None"
+        ownerLabel.text = "Owner: \(owner)"
+        lastModifiedLabel.text = "Last Modified: \(lastModified)"
+        commentLabel.text = "Comment: \(comment)"
+        
+        // Is the current report a favourite?
+        if isFavouriteCheck() == true {
+            // If it is, set the switch on!
+            favouriteSwitch.setOn(true, animated: false)
+        } else {
+            // It is not a favourite
+            favouriteSwitch.setOn(false, animated: false)
+        }
+    }
+    
+    // Action for when the Favourite Switch is pressed
     @IBAction func favouriteSwitch(_ sender: Any) {
         let isFavourite = favouriteSwitch.isOn
-
-        let reportYear = reportsByYear[currentYear]?[currentReport].year
-        let reportId = reportsByYear[currentYear]?[currentReport].id
-        let reportCoreId = "\(reportYear!)-\(reportId!)"
-
+        
+        let report = (reportsByYear[currentYear]?[currentReport])!
+        
+        // Construct the favourite ID
+        let reportYear = report.year
+        let reportId = report.id
+        let reportCoreId = "\(reportYear)-\(reportId)"
+        
+        // If it's a favourite now, insert the ID into CoreData
         if isFavourite == true {
             let newFavourite = NSEntityDescription.insertNewObject(forEntityName: "Favourites", into: context!) as! Favourites
             newFavourite.id = reportCoreId
-
+            favourites.append(reportCoreId)
+            
         } else {
+            // It's not a favourite. Request all the favourites
             let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Favourites")
             request.returnsObjectsAsFaults = false
             // Set the sort descriptor
             request.sortDescriptors?.append(NSSortDescriptor(key: "creationDate", ascending: true))
             
             do {
+                // Get the results
                 let results = try context?.fetch(request)
+                
+                // If we have results
                 if (results?.count)! > 0 {
+                    // If a result matches our ID, delete it
                     for result in results as! [NSManagedObject] {
                         let id: String = result.value(forKey: "id") as! String
                         if (id == reportCoreId) {
@@ -46,6 +107,9 @@ class ViewController: UIViewController, UIScrollViewDelegate {
                         }
                     }
                 }
+                
+                // Remove from the array
+                favourites = favourites.filter {$0 != reportCoreId}
             } catch {
                 print("Couldn't fetch results")
             }
@@ -54,45 +118,17 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         do {
             try context?.save()
         } catch {
-            print("there was an error")
+            print("Error saving CoreData changes")
         }
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        titleLabel.text = reportsByYear[currentYear]?[currentReport].title
-        authorLabel.text = reportsByYear[currentYear]?[currentReport].authors
-        let abstract = reportsByYear[currentYear]?[currentReport].abstract ?? "Empty"
-        
-        var finalAbstract = ""
-        if (abstract == "Empty") {
-            finalAbstract = "No abstract available."
-        } else {
-            finalAbstract = santiseText(text: abstract)
-        }
-        
-    
-        
-        let owner = reportsByYear[currentYear]?[currentReport].owner ??  "None"
-        let lastModified = reportsByYear[currentYear]?[currentReport].lastModified ?? "None"
-        let comment = reportsByYear[currentYear]?[currentReport].comment ?? "None"
-        
-        abstractLabel.text = finalAbstract
-        ownerLabel.text = "Owner: \(owner)"
-        lastModifiedLabel.text = "Last Modified: \(lastModified)"
-        commentLabel.text = "Comment: \(comment)"
-        
-        if isFavouriteCheck() == true {
-            favouriteSwitch.setOn(true, animated: false)
-        }
-
+        print(favourites)
     }
     
+    // Function to check if the current report is a favourite
     func isFavouriteCheck() -> Bool {
-        let reportYear = reportsByYear[currentYear]?[currentReport].year
-        let reportId = reportsByYear[currentYear]?[currentReport].id
-        let reportCoreId = "\(reportYear!)-\(reportId!)"
+        let report = (reportsByYear[currentYear]?[currentReport])!
+        let reportYear = report.year
+        let reportId = report.id
+        let reportCoreId = "\(reportYear)-\(reportId)"
         
         for favouriteId in favourites {
             if favouriteId == reportCoreId {
@@ -102,6 +138,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         return false
     }
     
+    // Function to remove Markup language from text
     func santiseText(text: String) -> String {
         return text.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
             .trimmingCharacters(in: .whitespaces)
