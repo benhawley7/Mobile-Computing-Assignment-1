@@ -14,6 +14,7 @@
 		E045AA1B218BB542008FB79D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E045AA1A218BB542008FB79D /* Assets.xcassets */; };
 		E045AA1E218BB542008FB79D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E045AA1C218BB542008FB79D /* LaunchScreen.storyboard */; };
 		E045AA26218BB811008FB79D /* ReportsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E045AA25218BB811008FB79D /* ReportsViewController.swift */; };
+		E09DA9B7218F215600B9B0C9 /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09DA9B6218F215600B9B0C9 /* PDFViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		E045AA1D218BB542008FB79D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E045AA1F218BB542008FB79D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E045AA25218BB811008FB79D /* ReportsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsViewController.swift; sourceTree = "<group>"; };
+		E09DA9B6218F215600B9B0C9 /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				E045AA10218BB53F008FB79D /* AppDelegate.swift */,
 				E045AA12218BB53F008FB79D /* ViewController.swift */,
 				E045AA14218BB53F008FB79D /* Main.storyboard */,
+				E09DA9B6218F215600B9B0C9 /* PDFViewController.swift */,
 				E045AA25218BB811008FB79D /* ReportsViewController.swift */,
 				E045AA1A218BB542008FB79D /* Assets.xcassets */,
 				E045AA1C218BB542008FB79D /* LaunchScreen.storyboard */,
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E09DA9B7218F215600B9B0C9 /* PDFViewController.swift in Sources */,
 				E045AA26218BB811008FB79D /* ReportsViewController.swift in Sources */,
 				E045AA19218BB53F008FB79D /* COMP327_Assignment_1.xcdatamodeld in Sources */,
 				E045AA13218BB53F008FB79D /* ViewController.swift in Sources */,

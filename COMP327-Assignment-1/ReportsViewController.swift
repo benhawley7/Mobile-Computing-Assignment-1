@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 struct techReport: Decodable {
     let year: String
@@ -24,25 +25,58 @@ struct technicalReports: Decodable {
     let techreports: [techReport]
 }
 
+let appDelegate = UIApplication.shared.delegate as! AppDelegate
+var context: NSManagedObjectContext?
+
 
 var currentYear: String = ""
 var currentReport = -1
 
 var years: [String] = []
 var reportsByYear: Dictionary<String, [techReport]> = [:]
+var favourites: [String] = []
 //var reports: [techReport] = []
 class ReportsViewController: UITableViewController {
+   
+    
+
     var reports: [techReport] = []
     @IBOutlet var reportsTable: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print("View Loaded.")
+        context = appDelegate.persistentContainer.viewContext
         getReportJSON()
-        
+        getFavourites()
+        print(favourites)
         reportsTable.reloadData()
     }
 
+    func getFavourites() {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Favourites")
+        request.returnsObjectsAsFaults = false
+        
+        // Reset the favourites array
+        favourites = []
+        
+        do {
+            let results = try context?.fetch(request)
+            for result in results as! [NSManagedObject] {
+                let id: String = result.value(forKey: "id") as! String
+                favourites.append(id)
+            }
+        } catch {
+            print("couldn't fetch results")
+        }
+        
+    }
     
+    override func viewWillAppear(_ animated: Bool) {
+        print("About to appear")
+        getFavourites()
+        reportsTable.reloadData()
+    }
+
     func getReportJSON() {
         if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP327/techreports/data.php?class=techreports") {
             let session = URLSession.shared
@@ -91,10 +125,8 @@ class ReportsViewController: UITableViewController {
         }
     }
  
-    // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return years.count
     }
 
@@ -117,54 +149,21 @@ class ReportsViewController: UITableViewController {
         let row = indexPath.row
         cell.textLabel?.text = reportsByYear[year]?[row].title
         cell.detailTextLabel?.text = reportsByYear[year]?[row].authors
-        cell.accessoryType = .checkmark
-        // Configure the cell...
+        
+        let reportYear: String = (reportsByYear[year]?[row].year)!
+        let reportId: String = (reportsByYear[year]?[row].id)!
+        let reportCoreId = "\(reportYear)-\(reportId)"
+        
+        for favouriteId in favourites {
+            if favouriteId == reportCoreId {
+                print("Match")
+                cell.accessoryType = .checkmark
+                break
+            } else {
+                cell.accessoryType = .none
+            }
+        }
+
         return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
