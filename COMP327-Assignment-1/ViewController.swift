@@ -142,10 +142,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     func santiseText(text: String) -> String {
         return text.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
             .trimmingCharacters(in: .whitespaces)
-            .replacingOccurrences(of: "\r\n", with: " ", options: .regularExpression, range: nil)
-            .replacingOccurrences(of: "\n\r", with: " ", options: .regularExpression, range: nil)
-            .replacingOccurrences(of: "\n", with: " ", options: .regularExpression, range: nil)
-            .replacingOccurrences(of: "\r", with: " ", options: .regularExpression, range: nil)
+//            .replacingOccurrences(of: "\r", with: " ", options: .regularExpression, range: nil)
 
     }
         

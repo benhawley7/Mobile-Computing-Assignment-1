@@ -19,15 +19,20 @@ class PDFViewController: UIViewController {
         super.viewDidLoad()
         // Get the PDF URL
         let url = reportsByYear[currentYear]?[currentReport].pdf
-        
         // If the URL is nil, backout
         if url == nil {
             return
         }
         
-        // Get the Documetn from the URL and assign it as the PDF views document
-        let document = PDFDocument(url: url!)
-        pdfView.autoScales = true
-        pdfView.document = document
+        // Perform this action in the background, so to not block the interface
+        DispatchQueue.global(qos: .background).async {
+            // Get the Document from the URL and assign it as the PDF views document
+            let document = PDFDocument(url: url!)
+       
+            DispatchQueue.main.async {
+                self.pdfView.autoScales = true
+                self.pdfView.document = document
+            }
+        }
     }
 }
