@@ -50,13 +50,16 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             pdfButton.isHidden = true
         }
         
-        // Owner, Last Modified and Comment can all be Nil
+        // Format Last Modified
+        let lastModified = report.lastModified
+        let formattedDate = dateFormat(dateString: lastModified)
+        lastModifiedLabel.text = "Last Modified: \(formattedDate)"
+
+        // Owner and Comment can all be Nil
         // Make sure we handle that case
         let owner = report.owner ??  "None"
-        let lastModified = report.lastModified 
         let comment = report.comment ?? "None"
         ownerLabel.text = "Owner: \(owner)"
-        lastModifiedLabel.text = "Last Modified: \(lastModified)"
         commentLabel.text = "Comment: \(comment)"
         
         // Is the current report a favourite?
@@ -144,6 +147,19 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             .trimmingCharacters(in: .whitespaces)
 //            .replacingOccurrences(of: "\r", with: " ", options: .regularExpression, range: nil)
 
+    }
+    
+    func dateFormat(dateString: String) -> String {
+        let dateFormatterGet = DateFormatter()
+        dateFormatterGet.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "dd MMMM yyyy, HH:mm:ss"
+        
+        guard let date = dateFormatterGet.date(from: dateString) else {
+            return "Invalid Date."
+        }
+        return dateFormatterPrint.string(from: date)
     }
         
 }

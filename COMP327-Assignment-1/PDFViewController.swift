@@ -11,12 +11,18 @@ import UIKit
 import PDFKit
 
 class PDFViewController: UIViewController {
-    // Outelt for the PDFView
+    // Outlet for the PDFView
     @IBOutlet weak var pdfView: PDFView!
+    
+    // Outlet for the loading spinner
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     // Called when the view load
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Start activity indicator and set it to disappear when stopped
+        activityIndicator.hidesWhenStopped = true;
+        activityIndicator.startAnimating()
         // Get the PDF URL
         let url = reportsByYear[currentYear]?[currentReport].pdf
         // If the URL is nil, backout
@@ -32,6 +38,7 @@ class PDFViewController: UIViewController {
             DispatchQueue.main.async {
                 self.pdfView.autoScales = true
                 self.pdfView.document = document
+                self.activityIndicator.stopAnimating()
             }
         }
     }
