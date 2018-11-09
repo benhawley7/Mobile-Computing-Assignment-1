@@ -17,14 +17,16 @@ class PDFViewController: UIViewController {
     // Outlet for the loading spinner
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    // Empty URL, will be overwritten when we segue
+    var url: URL? = URL(string: "")
+    
     // Called when the view load
     override func viewDidLoad() {
         super.viewDidLoad()
         // Start activity indicator and set it to disappear when stopped
         activityIndicator.hidesWhenStopped = true;
         activityIndicator.startAnimating()
-        // Get the PDF URL
-        let url = reportsByYear[currentYear]?[currentReport].pdf
+
         // If the URL is nil, backout
         if url == nil {
             return
@@ -33,7 +35,7 @@ class PDFViewController: UIViewController {
         // Perform this action in the background, so to not block the interface
         DispatchQueue.global(qos: .background).async {
             // Get the Document from the URL and assign it as the PDF views document
-            let document = PDFDocument(url: url!)
+            let document = PDFDocument(url: self.url!)
        
             DispatchQueue.main.async {
                 self.pdfView.autoScales = true

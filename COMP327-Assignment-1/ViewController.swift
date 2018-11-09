@@ -21,31 +21,34 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var lastModifiedLabel: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
     @IBOutlet weak var favouriteSwitch: UISwitch!
-
+    
+    // Initialise Empty Tech Report, will be overwritten to current
+    var report = techReport(year: "", id: "", owner: nil, authors:"", title: "", abstract: nil, pdf: nil, comment: nil, lastModified: "")
 
     
     // Called when view loads
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let report = (reportsByYear[currentYear]?[currentReport])!
-        
         // Title and Author are never Nil - simply assign
         titleLabel.text = report.title
         authorLabel.text = report.authors
         
         // Abstract can be nil - if nil, set to empty.
-        let abstract = report.abstract ?? "Empty"
+        let abstract: String? = report.abstract
         
+        // Set the abstract
         var finalAbstract = ""
-        if (abstract == "Empty") {
+        if (abstract == nil) {
+            // Have no abstract? Tell the user that.
             finalAbstract = "No abstract available."
         } else {
             // If we have an abstract, lets sanitise it to remove Markup
-            finalAbstract = santiseText(text: abstract)
+            finalAbstract = santiseText(text: abstract!)
         }
         abstractLabel.text = finalAbstract
         
+        // No PDF URL? Hide the button.
         if report.pdf == nil {
             pdfButton.isHidden = true
         }
@@ -75,8 +78,6 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     // Action for when the Favourite Switch is pressed
     @IBAction func favouriteSwitch(_ sender: Any) {
         let isFavourite = favouriteSwitch.isOn
-        
-        let report = (reportsByYear[currentYear]?[currentReport])!
         
         // Construct the favourite ID
         let reportYear = report.year
@@ -128,7 +129,6 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     // Function to check if the current report is a favourite
     func isFavouriteCheck() -> Bool {
-        let report = (reportsByYear[currentYear]?[currentReport])!
         let reportYear = report.year
         let reportId = report.id
         let reportCoreId = "\(reportYear)-\(reportId)"
@@ -160,6 +160,14 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             return "Invalid Date."
         }
         return dateFormatterPrint.string(from: date)
+    }
+    
+    // Send the PDF URL to the PDF View
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "to PDF" {
+            let pdfViewController = segue.destination as! PDFViewController
+            pdfViewController.url = report.pdf
+        }
     }
         
 }

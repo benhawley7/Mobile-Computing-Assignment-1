@@ -84,7 +84,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                         <state key="normal" title="View Full PDF"/>
                                         <connections>
-                                            <segue destination="cZ9-Qq-wYR" kind="show" id="Omf-O4-VVz"/>
+                                            <segue destination="cZ9-Qq-wYR" kind="show" identifier="to PDF" id="Omf-O4-VVz"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -211,9 +211,6 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
-                                <connections>
-                                    <segue destination="BYZ-38-t0r" kind="show" identifier="to Report" id="vMn-ro-Zfz"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -224,6 +221,7 @@
                     <navigationItem key="navigationItem" title="Computer Science Reports" id="ZJm-gi-J8n"/>
                     <connections>
                         <outlet property="reportsTable" destination="S5Z-hl-m86" id="ea6-gK-Fgj"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="to Report" id="pgl-yq-hlz"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qve-MY-ZG0" userLabel="First Responder" sceneMemberID="firstResponder"/>
