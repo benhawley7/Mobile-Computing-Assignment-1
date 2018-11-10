@@ -40,6 +40,8 @@ class ReportsViewController: UITableViewController {
     // Outlet for the table view
     @IBOutlet var reportsTable: UITableView!
     
+    let activityIndicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
+    
     // Dictionary to store arrays of reports keyed by their Year
     // i.e. reportsByYear[2018][0] = A report
     var reportsByYear: Dictionary<String, [techReport]> = [:]
@@ -61,12 +63,21 @@ class ReportsViewController: UITableViewController {
         // Assign the context
         context = appDelegate.persistentContainer.viewContext
         
+        // Set the activity indicator to be center of the view and start
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = false
+        activityIndicator.startAnimating()
+        
+        // Make the AI appear behind the report table view
+        reportsTable.backgroundView = activityIndicator
+        
         // Get the report JSON from the web API
         getReportJSON()
         
         // Get the favourites from the Core Data
         getFavourites()
-  
+
+        
         // Reload the table data
         reportsTable.reloadData()
     }
@@ -125,10 +136,12 @@ class ReportsViewController: UITableViewController {
                         self.reportsByYear = reportsByYear
                         // Reload the table
                         self.reportsTable.reloadData()
+                        self.activityIndicator.stopAnimating()
                         
                     }
                 } catch let jsonErr {
                     print("Error decoding JSON.", jsonErr)
+        
                 }
                 }.resume()
         }
