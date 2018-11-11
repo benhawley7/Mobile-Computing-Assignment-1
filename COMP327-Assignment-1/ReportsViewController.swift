@@ -60,7 +60,7 @@ class ReportsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Assign the context
+        // Assign the context for the CoreData
         context = appDelegate.persistentContainer.viewContext
         
         // Set the activity indicator to be center of the view and start
@@ -76,7 +76,6 @@ class ReportsViewController: UITableViewController {
         
         // Get the favourites from the Core Data
         getFavourites()
-
         
         // Reload the table data
         reportsTable.reloadData()
@@ -171,7 +170,7 @@ class ReportsViewController: UITableViewController {
         
     }
  
-    // The number of sections in the table is determiend by the Number of different Report Years
+    // The number of sections in the table is determiend by the Number of different unique Report Years
     override func numberOfSections(in tableView: UITableView) -> Int {
         return years.count
     }

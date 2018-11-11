@@ -112,7 +112,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
                     }
                 }
                 
-                // Remove from the array
+                // Remove from the global favourites array
                 favourites = favourites.filter {$0 != reportCoreId}
             } catch {
                 print("Couldn't fetch results")
@@ -129,6 +129,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     // Function to check if the current report is a favourite
     func isFavouriteCheck() -> Bool {
+        // Construct the unique identifier
         let reportYear = report.year
         let reportId = report.id
         let reportCoreId = "\(reportYear)-\(reportId)"
@@ -149,6 +150,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
 
     }
     
+    // Date format, takes date string and formats it to something more readable
     func dateFormat(dateString: String) -> String {
         let dateFormatterGet = DateFormatter()
         dateFormatterGet.dateFormat = "yyyy-MM-dd HH:mm:ss"
